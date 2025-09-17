@@ -128,7 +128,7 @@ export async function loginWithEmail(email: string) {
     // We should return the error to be handled in the UI
     return error;
   } else {
-    console.log('Magic link sent!')
+    console.log('Secure Link sent!')
     return null;
   }
 }
