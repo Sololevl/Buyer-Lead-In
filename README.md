@@ -86,10 +86,10 @@ Important: It is highly recommended to use the Transaction Pooler URL (the one w
 
 Fill in your .env file with your project's specific credentials. 
 
-4. Database Setup
+4. Database Setup:
 npx prisma migrate dev --name init
 
-5. Run loacally
+5. Run loacally:
 npm run dev
 
 ### Required CSV import format
