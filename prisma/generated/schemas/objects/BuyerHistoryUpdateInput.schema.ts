@@ -1,0 +1,18 @@
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema';
+import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
+import { JsonNullValueInputSchema } from '../enums/JsonNullValueInput.schema';
+import { BuyerUpdateOneRequiredWithoutHistoryNestedInputObjectSchema } from './BuyerUpdateOneRequiredWithoutHistoryNestedInput.schema'
+
+import { JsonValueSchema as jsonSchema } from '../../helpers/json-helpers';
+
+const makeSchema = () => z.object({
+  id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
+  changedBy: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
+  changedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema)]).optional(),
+  diff: z.union([JsonNullValueInputSchema, jsonSchema]).optional(),
+  buyer: z.lazy(() => BuyerUpdateOneRequiredWithoutHistoryNestedInputObjectSchema).optional()
+}).strict();
+export const BuyerHistoryUpdateInputObjectSchema: z.ZodType<Prisma.BuyerHistoryUpdateInput> = makeSchema() as unknown as z.ZodType<Prisma.BuyerHistoryUpdateInput>;
+export const BuyerHistoryUpdateInputObjectZodSchema = makeSchema();

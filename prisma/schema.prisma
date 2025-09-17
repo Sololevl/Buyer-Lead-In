@@ -1,0 +1,108 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model Buyer {
+  id           String   @id @default(uuid())
+  fullName     String   @db.VarChar(80)
+  email        String?  @db.VarChar(255)
+  phone        String   @db.VarChar(15)
+  city         City
+  propertyType PropertyType
+  bhk          BHK?
+  purpose      Purpose
+  budgetMin    Int?
+  budgetMax    Int?
+  timeline     Timeline
+  source       Source
+  status       Status   @default(New)
+  notes        String?  @db.VarChar(1000)
+  tags         String[] @db.Text
+  ownerId      String
+  createdAt    DateTime @default(now())  // Added missing createdAt
+  updatedAt    DateTime @updatedAt
+  history      BuyerHistory[]
+
+  // Add indexes for performance
+  @@index([ownerId])
+  @@index([status])
+  @@index([city])
+  @@index([propertyType])
+  @@index([updatedAt])
+  @@index([createdAt])
+  @@map("buyers") 
+}
+
+model BuyerHistory {
+  id        String   @id @default(uuid())
+  buyer     Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)  // Added cascade
+  buyerId   String
+  changedBy String
+  changedAt DateTime @default(now())
+  diff      Json
+
+  // Add indexes
+  @@index([buyerId])
+  @@index([changedAt])
+  @@map("buyer_history")
+}
+
+enum City {
+  Chandigarh
+  Mohali
+  Zirakpur
+  Panchkula
+  Other
+}
+
+enum PropertyType {
+  Apartment
+  Villa
+  Plot
+  Office
+  Retail
+}
+
+enum BHK {
+  Studio
+  One   @map("1")
+  Two    @map("2")
+  Three   @map("3")
+  Four    @map("4")
+}
+
+enum Purpose {
+  Buy
+  Rent
+}
+
+enum Timeline {
+  ZeroTo3m   @map("0-3m")
+  ThreeTo6m  @map("3-6m")
+  MoreThan6m @map(">6m")
+  Exploring
+}
+
+enum Source {
+  Website
+  Referral
+  WalkIn
+  Call
+  Other
+}
+
+enum Status {
+  New
+  Qualified
+  Contacted
+  Visited
+  Negotiation
+  Converted
+  Dropped
+} 

@@ -1,0 +1,34 @@
+import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
+import { CitySchema } from '../enums/City.schema';
+import { PropertyTypeSchema } from '../enums/PropertyType.schema';
+import { BHKSchema } from '../enums/BHK.schema';
+import { PurposeSchema } from '../enums/Purpose.schema';
+import { TimelineSchema } from '../enums/Timeline.schema';
+import { SourceSchema } from '../enums/Source.schema';
+import { StatusSchema } from '../enums/Status.schema';
+import { BuyerCreatetagsInputObjectSchema } from './BuyerCreatetagsInput.schema';
+import { BuyerHistoryCreateNestedManyWithoutBuyerInputObjectSchema } from './BuyerHistoryCreateNestedManyWithoutBuyerInput.schema'
+
+const makeSchema = () => z.object({
+  id: z.string().optional(),
+  fullName: z.string().max(80),
+  email: z.string().max(255).optional().nullable(),
+  phone: z.string().max(15),
+  city: CitySchema,
+  propertyType: PropertyTypeSchema,
+  bhk: BHKSchema.optional().nullable(),
+  purpose: PurposeSchema,
+  budgetMin: z.number().int().optional().nullable(),
+  budgetMax: z.number().int().optional().nullable(),
+  timeline: TimelineSchema,
+  source: SourceSchema,
+  status: StatusSchema.optional(),
+  notes: z.string().max(1000).optional().nullable(),
+  tags: z.union([z.lazy(() => BuyerCreatetagsInputObjectSchema), z.string().array()]),
+  ownerId: z.string(),
+  createdAt: z.coerce.date().optional(),
+  history: z.lazy(() => BuyerHistoryCreateNestedManyWithoutBuyerInputObjectSchema)
+}).strict();
+export const BuyerCreateInputObjectSchema: z.ZodType<Prisma.BuyerCreateInput> = makeSchema() as unknown as z.ZodType<Prisma.BuyerCreateInput>;
+export const BuyerCreateInputObjectZodSchema = makeSchema();
