@@ -7,7 +7,7 @@ import { z } from 'zod';
 import Header from '../components/Header';
 import { UserPlus, Save, X, Tag, LoaderCircle } from 'lucide-react';
 
-// Centralized Zod schema for validation
+// Centralized Zod schema for validation, now includes Status
 const buyerSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters').max(80, 'Full name must be at most 80 characters'),
   email: z.string().email('Invalid email format').optional().or(z.literal('')),
@@ -20,6 +20,7 @@ const buyerSchema = z.object({
   budgetMax: z.number().positive('Budget max must be positive').optional(),
   timeline: z.enum(['ZeroTo3m', 'ThreeTo6m', 'MoreThan6m', 'Exploring']),
   source: z.enum(['Website', 'Referral', 'WalkIn', 'Call', 'Other']),
+  status: z.enum(['New', 'Qualified', 'Contacted', 'Visited', 'Negotiation', 'Converted', 'Dropped']), // Status added here
   notes: z.string().max(1000, 'Notes must be at most 1000 characters').optional(),
   tags: z.array(z.string()).optional(),
   ownerId: z.string().min(1, 'Owner ID is required')
@@ -40,6 +41,7 @@ export default function CreateLeadPage() {
     purpose: 'Buy',
     timeline: 'Exploring',
     source: 'Website',
+    status: 'New', // Default status set here
     tags: []
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -184,7 +186,7 @@ export default function CreateLeadPage() {
                         
                         {/* BHK (Conditional) & Purpose */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                           {isResidential && (
+                           {isResidential ? (
                              <div>
                                 <label className="block text-sm font-medium text-gray-400 mb-2">BHK *</label>
                                 <select value={formData.bhk || ''} onChange={(e) => handleInputChange('bhk', e.target.value)} className="w-full px-3 py-3 bg-gray-900/50 border border-gray-600 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
@@ -197,7 +199,7 @@ export default function CreateLeadPage() {
                                 </select>
                                 {errors.bhk && <p className="mt-1 text-sm text-red-400">{errors.bhk}</p>}
                              </div>
-                           )}
+                           ) : <div></div>} {/* Placeholder for grid alignment */}
 
                            <div>
                                 <label className="block text-sm font-medium text-gray-400 mb-2">Purpose *</label>
@@ -229,8 +231,8 @@ export default function CreateLeadPage() {
                             </div>
                         </div>
 
-                        {/* Timeline & Source */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Timeline, Source & Status */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                            <div>
                                 <label className="block text-sm font-medium text-gray-400 mb-2">Timeline *</label>
                                 <select value={formData.timeline || ''} onChange={(e) => handleInputChange('timeline', e.target.value)} className="w-full px-3 py-3 bg-gray-900/50 border border-gray-600 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
@@ -249,6 +251,20 @@ export default function CreateLeadPage() {
                                     <option value="Call">Call</option>
                                     <option value="Other">Other</option>
                                 </select>
+                            </div>
+                             {/* Status Dropdown Added Here */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-400 mb-2">Status *</label>
+                                <select value={formData.status || ''} onChange={(e) => handleInputChange('status', e.target.value)} className="w-full px-3 py-3 bg-gray-900/50 border border-gray-600 text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                                    <option value="New">New</option>
+                                    <option value="Qualified">Qualified</option>
+                                    <option value="Contacted">Contacted</option>
+                                    <option value="Visited">Visited</option>
+                                    <option value="Negotiation">Negotiation</option>
+                                    <option value="Converted">Converted</option>
+                                    <option value="Dropped">Dropped</option>
+                                </select>
+                                {errors.status && <p className="mt-1 text-sm text-red-400">{errors.status}</p>}
                             </div>
                         </div>
 

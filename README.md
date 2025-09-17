@@ -1,42 +1,98 @@
 # Buyer Lead Intake App
 
-## 🔹 Overview
-The Buyer Lead Intake app allows you to manage buyer leads efficiently. You can import leads via CSV, validate them on both frontend and backend, and store them securely in a PostgreSQL database. The application is built with **Next.js 15.5.3 and **Prisma** ORM.  
+## Overview & Flow
+This is a modern, full-stack application designed for real estate professionals to manage buyer leads with efficiency and style. Built with a Next.js frontend and a Supabase/PostgreSQL backend, this CRM provides a seamless, secure, and highly responsive user experience.
 
-Key features:  
-- CSV import/export (max 200 rows per import)  
-- Row-level error reporting with validation messages  
-- Enum normalization and mapping (`BHK`, `Timeline`, `Status`) for csv import 
-- Ownership enforcement via `ownerId`   
-- Interactive client components for forms  
+The user flow is designed for simplicity and security. A user signs in via a secure magic link sent to their email. Once authenticated, they are taken directly to the main dashboard where they can view, search, and filter all company leads. Users can add new leads or edit/delete leads they personally own, with all data changes reflected in real-time. The application also supports bulk data management through a robust CSV import/export system with row-level validation.
+
+✨ Core Features
+Modern UI/UX: A complete visual overhaul featuring a "Command Center" dark theme with yellow and red accents, designed for clarity and aesthetic appeal.
+
+Full CRUD Functionality: Create, Read, Update, and Delete buyer leads with robust ownership rules.
+
+Live Search & Filtering: A dynamic search bar and filter system that updates the lead list in real-time as you type, thanks to debounced API calls for a smooth UX.
+
+URL-Synced State: All active filters and search queries are synced to the URL, allowing for shareable and bookmarkable views.
+
+Secure Magic Link Authentication: Passwordless login system handled by Supabase Auth for a secure and user-friendly experience.
+
+Robust CSV Management:
+
+Import: Bulk import up to 200 leads from a CSV file.
+
+Row-Level Validation: Each row is validated against the schema, with clear, actionable error messages displayed for any invalid entries.
+
+Filtered Export: Export the currently filtered list of leads to a CSV file.
+
+Polished User Experience:
+
+Skeleton Loaders: Sleek, content-aware skeleton loaders provide a smooth loading experience while data is being fetched.
+
+Interactive Elements: Dynamic hover effects, custom modals, and animated icons from lucide-react create an engaging interface.
+
+Responsive Design: The entire application is designed to be fully functional and visually appealing on all devices, from mobile phones to desktops.
+
+🛠️ Tech Stack
+Framework: Next.js (App Router)
+
+Language: TypeScript
+
+Database: Supabase (PostgreSQL)
+
+ORM: Prisma
+
+Validation: Zod (for both client and server-side validation)
+
+UI: Tailwind CSS
+
+Icons: Lucide React
+
+Authentication: Supabase Auth
+
+Deployment: Vercel
 
 
-## Setup
-###```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=<your-supabase-project-url>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
-# Database
-DATABASE_URL="postgresql://postgres.<your-db-identifier>:<your-password>@<your-host>:5432/postgres"
+🚀 Getting Started
+Follow these steps to set up and run the project locally.
 
-### Clone the Repository
-```bash
-git clone <repo-url>
-cd buyerleadintake
-###Install dependencies
+Prerequisites
+Node.js (v18 or later)
+
+npm or yarn
+
+Git
+
+A free Supabase account
+
+1. Clone the Repository
+git clone [https://github.com/YourUsername/your-repo-name.git](https://github.com/YourUsername/your-repo-name.git)
+cd your-repo-name
+
+2. Install Dependencies
 npm install
-npm install next react react-dom @prisma/client zod
-npm install -D prisma
 
---
-### Database Setup
+3. Set Up Supabase & Environment Variables
+Create a new project on Supabase.
+
+In the project's root, create a new file named .env.
+
+Copy the contents of .env.example into your new .env file.
+
+Navigate to Settings > API in your Supabase dashboard to find your URL and anon key.
+
+Navigate to Settings > Database to find your database connection string.
+
+Important: It is highly recommended to use the Transaction Pooler URL (the one with port 6543) to avoid common network firewall issues.
+
+Fill in your .env file with your project's specific credentials. 
+
+4. Database Setup
 npx prisma migrate dev --name init
 
-###run loacally
+5. Run loacally
 npm run dev
 
-###Required CSV import format
+### Required CSV import format
 fullName,email,phone,city,propertyType,bhk,purpose,budgetMin,budgetMax,timeline,source,notes,tags,status
 
 ## Design Notes
@@ -66,21 +122,20 @@ fullName,email,phone,city,propertyType,bhk,purpose,budgetMin,budgetMax,timeline,
 ## What's Done vs Skipped
 
 ### Done
+- **Dynamic Dashboard:** A real-time, debounced search and filter system with URL state synchronization is complete. This provides a fast, modern experience by updating the leads list automatically as the user types, eliminating the need for a "submit" button.
 - **Database & Data Model:** Created the required Prisma data models for Buyer Leads, including enums for `city`, `propertyType`, `BHK`, `timeline`, `source`, and `status`.
 - **CSV Import/Export:** Users can import up to 200 rows from CSV and export existing leads. Proper mapping and validation are implemented.
 - **Zod Validation:** Both frontend and backend validations are implemented using Zod to ensure data integrity and consistent error reporting.
-- **Authentication:** Implemented authentication using **Magic Link** (email-based login) for secure access.
+- **Authentication:** Implemented authentication using **Secure Link** (email-based login) for secure access.
 - **View/Edit Data:** Users can view all leads and edit their details. Ownership of leads is enforced via `ownerId`.
 - **Search & Filtering:** Added a search bar with filtering functionality to quickly find leads based on different fields (name, city, status, etc.).
-- **Status:** Status included in table, but no inline dropdown quick-action in the table.  
+- **Status:** Status included in table.
 
 ### ⏭ Skipped / Future Improvements
-- **Server-side Authorization & SSR:** Currently, all pages are client components and authorization is handled on the client. For      production-grade security, server-side authorization could be added.
+- **Server-side Authorization & SSR:** Currently, all pages are client components and authorization is handled on the client. For production-grade security, server-side authorization could be added.
 - **Role-based Access Control:** Multi-user roles and permissions are not implemented yet.
 - **Tag Chips with Typeahead:** Not implemented. Tags are stored as arrays but there’s no chip-based UI with typeahead yet.  
 - **Optimistic Edits with Rollback:** Edits are applied after API response, no rollback UX is implemented.  
-- **File Uploads (`attachmentUrl`):** Not implemented; could be useful for storing related documents (e.g., ID proof, agreements).  
-
-⚠️ **Note:** From the suggested bonus features, I implemented **basic full-text search** but skipped the others due to time constraints. These skipped items are good candidates for future enhancement.
+- **Communication Logging:** Add a feature to log interactions such as calls, emails, or meetings. Each log could include notes and a timestamp, creating a comprehensive and filterable communication history for each lead.
 
 
