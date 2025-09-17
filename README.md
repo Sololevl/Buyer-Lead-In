@@ -72,19 +72,19 @@ cd your-repo-name
 npm install
 
 3. Set Up Supabase & Environment Variables
-Create a new project on Supabase.
+      Create a new project on Supabase.
 
-In the project's root, create a new file named .env.
+      In the project's root, create a new file named .env.
 
-Copy the contents of .env.example into your new .env file.
+      Copy the contents of .env.example into your new .env file.
 
-Navigate to Settings > API in your Supabase dashboard to find your URL and anon key.
+      Navigate to Settings > API in your Supabase dashboard to find your URL and anon key.
 
-Navigate to Settings > Database to find your database connection string.
+      Navigate to Settings > Database to find your database connection string.
 
-Important: It is highly recommended to use the Transaction Pooler URL (the one with port 6543) to avoid common network firewall issues.
+      Important: It is highly recommended to use the Transaction Pooler URL (the one with port 6543) to avoid common network firewall issues.
 
-Fill in your .env file with your project's specific credentials. 
+      Fill in your .env file with your project's specific credentials. 
 
 4. Database Setup:
 npx prisma migrate dev --name init
